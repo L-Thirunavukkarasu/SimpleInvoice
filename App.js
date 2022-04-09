@@ -2,8 +2,10 @@
 import React, { useEffect,useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import NoInternet from './src/screens/NoInternet'
-
+import MainNavigator from './src/Navigation';
+import NoInternet from './src/Screens/NoInternet';
+import styled from 'styled-components';
+import {COLORS} from './src/Components/Constants/Colors';
 // create a component
 const App = () => {
 
@@ -22,20 +24,17 @@ const App = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {isConnected ?  <Text>App</Text> : <NoInternet />}
-    </View>
+    <SafeAreaView>
+      {isConnected ?  <MainNavigator/> : <NoInternet />}
+    </SafeAreaView>
   );
 };
 
 // define your styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const SafeAreaView = styled.SafeAreaView`
+  flex: 1;
+  background_color: ${COLORS.MORA_BG_GRAY_WHITE};
+`;
 
 //make this component available to the app
 export default App;
