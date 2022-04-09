@@ -1,0 +1,21 @@
+export const COLORS = {
+    MORA_BLUE: '#212c5f',
+    WHITE: '#FFFFFF',
+    GREY: '#F9F9F9',
+    MORA_RED: '#FF4D56',
+    MORA_GREY: '#6A7E9B',
+    MORA_OFF_WHITE: '#F1F1F1',
+    LIGHT_GREY: '#EEEAE6',
+    MORA_DARK_RED:'#fb3344',
+    MORA_DARK_BLUE:'#687893',
+    MORA_GREEN:'green',
+    MORA_TRANS:'transparent',
+    MORA_LIGHT_WHITE:'#F9F9F9',
+    MORA_MID_GRAY:'#C4C4C4',
+    BLACK:'#000000',
+    MORABAHA_LOAN:'#3ccf8d',
+    MORA_HEADER_GRAY:'#E9E9E9',
+    NEW_GREY:'#b7b7b7',
+    MORA_BG_GRAY_WHITE:'#fffeff',
+  };
+  
