@@ -15,13 +15,15 @@ const HomeScreen = ({navigation}) => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(15);
   const [loadMore, setLoadMore] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchApplied, setSearchApplied] = useState(false);
 
   useEffect(() => {
-    getInvoicesList(pageNum);
+    getInvoicesList(pageNum, searchKeyword);
   }, []);
 
   //get invoice list from api
-  const getInvoicesList = async (pageNumber) => {
+  const getInvoicesList = async (pageNumber, query) => {
     let body = {
       grant_type: 'client_credentials',
       scope: 'PRODUCTION',
@@ -42,22 +44,27 @@ const HomeScreen = ({navigation}) => {
     //console.log('api-response-splash', responseBase);
 
     if (responseBase?.status == 200) {
+      query != '' && pageNumber == 1 ? setInvoicesList([]) : null;
       let access_token = `${responseBase?.data?.token_type} ${responseBase?.data?.access_token}`;
-      let param = `merchantReference=3011047&pageNum=${pageNumber}&pageSize=${pageSize}&fromDate=2019-01-13&toDate=2021-01-14`;
-      let url = Constants.APP_GET_INVOICES_BASE_URL + param;
+      let param_url = `merchantReference=3011047&pageNum=${pageNumber}&pageSize=${pageSize}&fromDate=2019-01-13&toDate=2021-01-14`;
+      let param_keyword_url = `merchantReference=3011047&pageNum=${pageNumber}&pageSize=${pageSize}&fromDate=2019-01-13&toDate=2021-01-14&keyword=${query}`;
+      let url =
+        query && query != ''
+          ? Constants.APP_GET_INVOICES_BASE_URL + param_keyword_url
+          : Constants.APP_GET_INVOICES_BASE_URL + param_url;
       let header = {
         Authorization: access_token,
       };
       //get invoices list from api
       let response = await Api.getInvoices(url, header);
-      console.log('api-response-home',pageNumber,url, response?.data);
+      console.log('api-response-home', pageNumber, url, response?.data);
 
       setLoading(false);
-      setInvoicesList(
-        pageNumber == 1
+      let array =
+        response?.data?.data && response?.data?.data?.length > 0
           ? response?.data?.data
-          : [...invoicesList, ...response?.data?.data],
-      );
+          : [];
+      setInvoicesList(pageNumber == 1 ? array : [...invoicesList, ...array]);
       setTotalCount(response?.data?.paging?.totalRecords);
       setLoadMore(false);
     } else {
@@ -76,69 +83,113 @@ const HomeScreen = ({navigation}) => {
       {loading ? (
         <ProgressDialogue showModal={loading} />
       ) : (
-        <InvoicesList
-          data={invoicesList}
-          renderItem={({item, index}) => {
-            return (
-              <InvoiceListItem
-                key={item?.invoiceId}
-                onPress={() =>
-                  navigation.navigate('DetailScreen', {data: item})
-                }>
-                <RenderTxtView
-                  keyVal={'Invoice No'}
-                  value={item?.invoiceNumber}
-                />
-                <RenderTxtView
-                  keyVal={'Invoice Date'}
-                  value={item?.invoiceDate}
-                />
-                {item?.currencySymbol && item?.totalAmount ? (
+        <HomeContainer>
+          <InvoiceSearchView>
+            <InvoiceSearch
+              onChangeText={async txt => {
+                setSearchKeyword(txt);
+                if (searchKeyword?.length > 0 && searchApplied) {
+                  setLoading(true);
+                  setPageNum(1);
+                  setSearchApplied(false);
+                  await getInvoicesList(1, searchKeyword);
+                }
+              }}
+              value={searchKeyword}
+              placeholder={'Please enter the keyword...'}
+            />
+            <InvoiceSearchBtn
+              onPress={async () => {
+                if (!searchApplied) {
+                  setLoading(true);
+                  setPageNum(1);
+                  setSearchApplied(true);
+                  await getInvoicesList(1, searchKeyword);
+                } else {
+                  setSearchKeyword('');
+                  setLoading(true);
+                  setPageNum(1);
+                  setSearchApplied(false);
+                  await getInvoicesList(1, '');
+                }
+              }}>
+              <InvoiceSearchImg
+                source={
+                  searchApplied
+                    ? require('../../Assets/Images/cancel.png')
+                    : require('../../Assets/Images/search.png')
+                }
+              />
+            </InvoiceSearchBtn>
+          </InvoiceSearchView>
+
+          <InvoicesList
+            data={invoicesList}
+            renderItem={({item, index}) => {
+              return (
+                <InvoiceListItem
+                  key={item?.invoiceId}
+                  onPress={() =>
+                    navigation.navigate('DetailScreen', {data: item})
+                  }>
                   <RenderTxtView
-                    keyVal={'Amount'}
-                    value={`${item?.currencySymbol} ${item?.totalAmount}`}
+                    keyVal={'Invoice No'}
+                    value={item?.invoiceNumber}
                   />
-                ) : null}
-                <RenderTxtView
-                  keyVal={'Description'}
-                  value={item?.description}
-                />
-                {item?.status[0]?.key ? (
-                  <InvoiceStatus invoiceStatus={item?.status[0]?.key}>
-                    <InvoiceStatusTxt>{item?.status[0]?.key}</InvoiceStatusTxt>
-                  </InvoiceStatus>
-                ) : null}
-              </InvoiceListItem>
-            );
-          }}
-          keyExtractor={item => item?.invoiceId}
-          contentContainerStyle={{paddingBottom: 50}}
-          ListFooterComponent={() => {
-            return (
-              <InvoiceFooter>
-                  {invoicesList?.length > 0? 
+                  <RenderTxtView
+                    keyVal={'Invoice Date'}
+                    value={item?.invoiceDate}
+                  />
+                  {item?.currencySymbol && item?.totalAmount ? (
+                    <RenderTxtView
+                      keyVal={'Amount'}
+                      value={`${item?.currencySymbol} ${item?.totalAmount}`}
+                    />
+                  ) : null}
+                  <RenderTxtView
+                    keyVal={'Description'}
+                    value={item?.description}
+                  />
+                  {item?.status[0]?.key ? (
+                    <InvoiceStatus invoiceStatus={item?.status[0]?.key}>
+                      <InvoiceStatusTxt>
+                        {item?.status[0]?.key}
+                      </InvoiceStatusTxt>
+                    </InvoiceStatus>
+                  ) : null}
+                </InvoiceListItem>
+              );
+            }}
+            keyExtractor={item => item?.invoiceId}
+            contentContainerStyle={{paddingBottom: 50}}
+            ListFooterComponent={() => {
+              return (
+                <InvoiceFooter>
+                  {invoicesList?.length > 0 &&
+                  totalCount > invoicesList?.length ? (
                     <InvoiceFooterView>
-                        <InvoiceLoader/>
+                      <InvoiceLoader />
                     </InvoiceFooterView>
-                  :
-                <InvoiceEmpty>
-                  <InvoiceEmptyTxt>No Data Found</InvoiceEmptyTxt>
-                </InvoiceEmpty>}
-              </InvoiceFooter>
-            );
-          }}
-          onEndReachedThreshold={0.5}
-          onEndReached={async () => {
-            console.log('api-response-home',totalCount);
-            if (totalCount > invoicesList?.length) {
-              await setLoadMore(true);
-              let pageNumber = pageNum + 1;
-              await setPageNum(pageNumber);
-              await getInvoicesList(pageNumber);
-              console.log('api-response-home',totalCount,pageNumber);
-            }
-          }}
-        />
+                  ) : invoicesList?.length == 0 ? (
+                    <InvoiceEmpty>
+                      <InvoiceEmptyTxt>No Data Found</InvoiceEmptyTxt>
+                    </InvoiceEmpty>
+                  ) : null}
+                </InvoiceFooter>
+              );
+            }}
+            onEndReachedThreshold={0.5}
+            onEndReached={async () => {
+              if (totalCount > invoicesList?.length) {
+                await setLoadMore(true);
+                let pageNumber = pageNum + 1;
+                await setPageNum(pageNumber);
+                await getInvoicesList(pageNumber, searchKeyword);
+                console.log('api-response-home', totalCount, pageNumber);
+              }
+            }}
+          />
+        </HomeContainer>
       )}
     </SafeAreaView>
   );
@@ -155,10 +206,10 @@ const InvoicesList = styled.FlatList`
 const InvoiceListItem = styled.TouchableOpacity`
   background_color: ${COLORS.WHITE};
   margin_horizontal: 15px;
-  margin_top: 15px;
+  margin_bottom: 15px;
   padding_horizontal: 15px;
   padding_vertical: 15px;
-  border_radius: 10px;
+  border-radius: 10px;
 `;
 
 const InvoiceStatus = styled.View`
@@ -190,17 +241,53 @@ const InvoiceFooter = styled.View`
 `;
 
 const InvoiceFooterView = styled.View`
-height:50px;
-margin_horizontal:15px;
-background_color:${COLORS.WHITE};
-border_radius:10px;
-padding:10px;
-margin_vertical:15px;
-justify_content:center;
-align_items:center;
+  height: 50px;
+  margin_horizontal: 15px;
+  background_color: ${COLORS.WHITE};
+  border_radius: 10px;
+  padding: 10px;
+  margin_vertical: 15px;
+  justify_content: center;
+  align_items: center;
 `;
 
 const InvoiceLoader = styled.ActivityIndicator``;
+
+const InvoiceSearchView = styled.View`
+  flex_direction: row;
+  margin_top: 15px;
+  margin_horizontal: 15px;
+  margin_bottom: 15px;
+`;
+
+const InvoiceSearch = styled.TextInput`
+  padding: 10px;
+  height: 50px;
+  background_color: ${COLORS.WHITE};
+  border-radius: 10px;
+  flex: 1;
+`;
+
+const InvoiceSearchBtn = styled.TouchableOpacity`
+  width: 50px;
+  height: 50px;
+  border_radius: 10px;
+  padding: 3px;
+  background_color: ${COLORS.WHITE};
+  align_items: center;
+  justify_content: center;
+  margin_start: 15px;
+`;
+
+const InvoiceSearchImg = styled.Image`
+  resize_mode: contain;
+  width: 35px;
+  height: 35px;
+`;
+
+const HomeContainer = styled.View`
+  flex: 1;
+`;
 
 //make this component available to the app
 export default HomeScreen;
