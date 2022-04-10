@@ -1,8 +1,7 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+//navigation import
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-
 //screens import
 import SplashScreen from '../Screens/SplashScreen';
 import HomeScreen from '../Screens/HomeScreen';
@@ -15,7 +14,11 @@ function MainNavigator() {
       <Stack.Navigator
         initialRouteName="SplashScreen"
         screenOptions={{headerShown: true, gestureEnabled: false}}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="SplashScreen"
+          component={SplashScreen}
+        />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="DetailScreen" component={DetailScreen} />
       </Stack.Navigator>

@@ -1,4 +1,3 @@
-//import liraries
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import * as Constants from '../../Api/constants';
@@ -7,7 +6,6 @@ import ProgressDialogue from '../../Components/AlertDialogue/ProgressDialogue';
 import {COLORS} from '../../Components/Constants/Colors';
 import RenderTxtView from '../../Components/RenderTxtView';
 
-// create a component
 const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [invoicesList, setInvoicesList] = useState([]);
@@ -44,7 +42,10 @@ const HomeScreen = ({navigation}) => {
     //console.log('api-response-splash', responseBase);
 
     if (responseBase?.status == 200) {
+      //clear invoice list array when the search query entered first time
       query != '' && pageNumber == 1 ? setInvoicesList([]) : null;
+
+      //generating the params with custom values for pagination & search query apply
       let access_token = `${responseBase?.data?.token_type} ${responseBase?.data?.access_token}`;
       let param_url = `merchantReference=3011047&pageNum=${pageNumber}&pageSize=${pageSize}&fromDate=2019-01-13&toDate=2021-01-14`;
       let param_keyword_url = `merchantReference=3011047&pageNum=${pageNumber}&pageSize=${pageSize}&fromDate=2019-01-13&toDate=2021-01-14&keyword=${query}`;
@@ -55,10 +56,12 @@ const HomeScreen = ({navigation}) => {
       let header = {
         Authorization: access_token,
       };
+
       //get invoices list from api
       let response = await Api.getInvoices(url, header);
-      console.log('api-response-home', pageNumber, url, response?.data);
+      //console.log('api-response-home', pageNumber, url, response?.data);
 
+      //set data from api response and stop loaders
       setLoading(false);
       let array =
         response?.data?.data && response?.data?.data?.length > 0
@@ -68,7 +71,7 @@ const HomeScreen = ({navigation}) => {
       setTotalCount(response?.data?.paging?.totalRecords);
       setLoadMore(false);
     } else {
-      //alert('Something went wrong...try again later...');
+      //to avoid crash error while api facing any errors
       setLoading(false);
       setInvoicesList(
         pageNumber > 1 && invoicesList?.length > 0 ? invoicesList : [],
@@ -88,6 +91,7 @@ const HomeScreen = ({navigation}) => {
             <InvoiceSearch
               onChangeText={async txt => {
                 setSearchKeyword(txt);
+                //clear previously searched query results, when user manually clear the text using keyboard
                 if (searchKeyword?.length > 0 && searchApplied) {
                   setLoading(true);
                   setPageNum(1);
@@ -100,12 +104,14 @@ const HomeScreen = ({navigation}) => {
             />
             <InvoiceSearchBtn
               onPress={async () => {
+                //get new results, based on search query
                 if (!searchApplied) {
                   setLoading(true);
                   setPageNum(1);
                   setSearchApplied(true);
                   await getInvoicesList(1, searchKeyword);
                 } else {
+                  //clear previously searched query results, when user manually clear the text using keyboard
                   setSearchKeyword('');
                   setLoading(true);
                   setPageNum(1);
@@ -122,7 +128,6 @@ const HomeScreen = ({navigation}) => {
               />
             </InvoiceSearchBtn>
           </InvoiceSearchView>
-
           <InvoicesList
             data={invoicesList}
             renderItem={({item, index}) => {
@@ -163,6 +168,7 @@ const HomeScreen = ({navigation}) => {
             keyExtractor={item => item?.invoiceId}
             contentContainerStyle={{paddingBottom: 50}}
             ListFooterComponent={() => {
+              //load footer view - like load more items loader & api response is empty handler
               return (
                 <InvoiceFooter>
                   {invoicesList?.length > 0 &&
@@ -180,12 +186,13 @@ const HomeScreen = ({navigation}) => {
             }}
             onEndReachedThreshold={0.5}
             onEndReached={async () => {
+              //to call load more method to get additional data based on page number
               if (totalCount > invoicesList?.length) {
                 await setLoadMore(true);
                 let pageNumber = pageNum + 1;
                 await setPageNum(pageNumber);
                 await getInvoicesList(pageNumber, searchKeyword);
-                console.log('api-response-home', totalCount, pageNumber);
+                //console.log('api-response-home', totalCount, pageNumber);
               }
             }}
           />
@@ -195,6 +202,7 @@ const HomeScreen = ({navigation}) => {
   );
 };
 
+//styles
 const SafeAreaView = styled.SafeAreaView`
   flex: 1;
 `;
@@ -215,14 +223,14 @@ const InvoiceListItem = styled.TouchableOpacity`
 const InvoiceStatus = styled.View`
   align_self: flex-end;
   background_color: ${props =>
-    props?.invoiceStatus == 'Paid' ? COLORS.APP_GREEN : COLORS.APP_RED};
+    props?.invoiceStatus == 'Paid' ? COLORS.APP_GREEN : COLORS.APP_GRAY};
   border-radius: 15px;
   padding_horizontal: 10px;
   padding_vertical: 5px;
 `;
 
 const InvoiceStatusTxt = styled.Text`
-  color: ${COLORS.APP_OFF_WHITE};
+  color: ${COLORS.WHITE};
   font_size: 17px;
 `;
 
@@ -251,7 +259,9 @@ const InvoiceFooterView = styled.View`
   align_items: center;
 `;
 
-const InvoiceLoader = styled.ActivityIndicator``;
+const InvoiceLoader = styled.ActivityIndicator`
+  color: ${COLORS.APP_GRAY};
+`;
 
 const InvoiceSearchView = styled.View`
   flex_direction: row;
@@ -289,5 +299,4 @@ const HomeContainer = styled.View`
   flex: 1;
 `;
 
-//make this component available to the app
 export default HomeScreen;

@@ -1,9 +1,8 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {memo} from 'react';
 import styled from 'styled-components';
 import {COLORS} from '../../Components/Constants/Colors';
 
-const NoInternet = ({navigation}) => {
+const NoInternet = () => {
 
   return (
     <Container>
@@ -24,13 +23,13 @@ const Container = styled.SafeAreaView`
   flex: 1;
   justify_content: center;
   align_items: center;
-  background_color: ${COLORS.MORA_BG_GRAY_WHITE};
+  background_color: ${COLORS.WHITE};
 `;
 
 const StatusTxt = styled.Text`
   font_size: 24px;
   margin_top: 15px;
-  color: ${COLORS.MORA_BLUE};
+  color: ${COLORS.APP_GRAY};
   text_align:center;
   font_weight: 600;
   line_height: 30px;
@@ -38,11 +37,12 @@ const StatusTxt = styled.Text`
 
 const DescText = styled.Text`
   font_size: 16px;
-  color: #687893;
+  color: ${COLORS.APP_OFF_WHITE}
   width: 93%;
   font_weight: 400;
   text_align: center;
-  line_height: 20px;
+  line_height: 23px;
+  margin_top:10px;
 `;
 
 const ImgView = styled.Image`
@@ -52,7 +52,7 @@ const ImgView = styled.Image`
 const InnerRedLine = styled.View`
   width: 10%;
   align_self: center;
-  background_color: #fb3344;
+  background_color: ${COLORS.APP_RED};
   height: 3px;
   margin_bottom: 10px;
 `;

@@ -11,7 +11,7 @@ const ProgressDialogue = ({onClose, showModal}) => {
       isVisible={showModal ? showModal : false}
       style={styles.modal_view}>
       <View style={styles.modal_content_view}>
-         <ActivityIndicator size={'large'} color={COLORS.APP_GREEN} />
+         <ActivityIndicator size={'large'} color={COLORS.APP_GRAY} />
           <Text style={styles.modal_desc_text}>{'Loading...'}</Text>
       </View>
     </Modal>
