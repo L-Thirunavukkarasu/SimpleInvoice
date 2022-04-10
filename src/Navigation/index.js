@@ -14,7 +14,7 @@ function MainNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="SplashScreen"
-        screenOptions={{headerShown: false, gestureEnabled: false}}>
+        screenOptions={{headerShown: true, gestureEnabled: false}}>
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="DetailScreen" component={DetailScreen} />

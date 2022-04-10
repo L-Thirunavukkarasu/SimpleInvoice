@@ -1,33 +1,15 @@
 //import liraries
 import React, {memo, useEffect} from 'react';
 import styled from 'styled-components';
-import {callPostApi} from '../../Api';
 
 // create a component
 const SplashScreen = ({navigation}) => {
-  //navigate home screen after few seconds
   useEffect(() => {
-    getAccessToken();
-  }, []);
-
-  const getAccessToken = async () => {
-    let body = {
-      grant_type: 'client_credentials',
-      scope: 'PRODUCTION',
-    };
-
-    let header = {
-      Authorization:
-        'Basic TGJUZVVFT2RpTEhhZzV4aUxpWDdPQ3ZFbmZNYTpiWVNtbFRBakxsVDJuWEc1SVh2QjNLRDdvVm9h',
-      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    };
-
-    let response = await callPostApi('token', body, header);
-    console.log('api-response-splash', response);
+    //navigate home screen after few seconds
     setTimeout(() => {
-      //navigation.navigate('HomeScreen');
-    }, 300);
-  };
+      navigation.navigate('HomeScreen');
+    }, 3000);
+  }, []);
 
   return (
     <Container>
@@ -37,7 +19,7 @@ const SplashScreen = ({navigation}) => {
   );
 };
 
-// define your styles
+//styles
 const Container = styled.View`
   flex: 1;
   justify_content: center;
