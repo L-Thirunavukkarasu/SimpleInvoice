@@ -1,7 +1,8 @@
 # SimpleInvoice
 
-    This app aim is to handle anger management with help of user friendly designs,
-    based on the selection or slider changes we can rate on our anger.
+    An invoice is a time-stamped commercial document that itemizes and
+    records a transaction between a buyer and a seller.with help of this app,
+    we can show list of invoices & details pages with pagination & search support
     
     SimpleInvoice is open source, and available under a free-to-try license. 
     
