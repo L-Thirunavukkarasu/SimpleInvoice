@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import * as Constants from '../../Api/constants';
-import * as Api from '../../Api/index';
-import ProgressDialogue from '../../Components/AlertDialogue/ProgressDialogue';
-import {COLORS} from '../../Components/Constants/Colors';
-import RenderTxtView from '../../Components/RenderTxtView';
+import * as Constants from '../../api/constants';
+import * as Api from '../../api/index';
+import ProgressDialogue from '../../components/alertdialogue';
+import {COLORS} from '../../constants/colors';
+import RenderTxtView from '../../components/rendertxtview';
 
 const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
@@ -122,8 +122,8 @@ const HomeScreen = ({navigation}) => {
               <InvoiceSearchImg
                 source={
                   searchApplied
-                    ? require('../../Assets/Images/cancel.png')
-                    : require('../../Assets/Images/search.png')
+                    ? require('../../../Assets/Images/cancel.png')
+                    : require('../../../Assets/Images/search.png')
                 }
               />
             </InvoiceSearchBtn>

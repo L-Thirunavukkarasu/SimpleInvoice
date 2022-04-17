@@ -1,12 +1,12 @@
 import React, {memo} from 'react';
 import styled from 'styled-components';
-import {COLORS} from '../../Components/Constants/Colors';
+import {COLORS} from '../../constants/colors';
 
 const NoInternet = () => {
 
   return (
     <Container>
-      <ImgView source={require('../../Assets/Images/noInternet.png')} />
+      <ImgView source={require('../../../Assets/Images/noInternet.png')} />
       <InnerRedLine />
       <StatusTxt>{'No internet connection'}</StatusTxt>
       <DescText>

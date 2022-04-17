@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import styled from 'styled-components';
-import {COLORS} from '../../Components/Constants/Colors';
+import {COLORS} from '../../constants/colors';
 
 const SplashScreen = ({navigation}) => {
   return (

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import MainNavigator from './src/Navigation';
-import NoInternet from './src/Screens/NoInternet';
+import MainNavigator from './src/components/navigation';
+import NoInternet from './src/screens/nointernet';
 import styled from 'styled-components';
-import {COLORS} from './src/Components/Constants/Colors';
+import {COLORS} from './src/constants/colors';
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(true);

@@ -2,7 +2,7 @@
 import React, {memo} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity,ActivityIndicator} from 'react-native';
 import Modal from 'react-native-modal';
-import {COLORS} from '../Constants/Colors';
+import {COLORS} from '../../constants/colors';
 // create a component
 const ProgressDialogue = ({onClose, showModal}) => {
   return (

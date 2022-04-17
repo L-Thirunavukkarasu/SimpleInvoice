@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import styled from 'styled-components';
-import {COLORS} from '../../Components/Constants/Colors';
-import RenderTxtView from '../../Components/RenderTxtView';
+import {COLORS} from '../../constants/colors';
+import RenderTxtView from '../../components/rendertxtview';
 
 const DetailScreen = ({route}) => {
   //retrieve data from navigation params
