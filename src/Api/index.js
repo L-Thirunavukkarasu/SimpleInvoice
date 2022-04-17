@@ -16,7 +16,7 @@ export const callPostApi = (apiEndPoint, body, header) => {
       return response;
     })
     .catch(error => {
-      console.log('callPostApi-error', JSON.stringify(error));
+      //console.log('callPostApi-error', JSON.stringify(error));
       if (error.response.data) {
         //console.log('callPostApi-error data ', error.response.data);
         return error.response.data;

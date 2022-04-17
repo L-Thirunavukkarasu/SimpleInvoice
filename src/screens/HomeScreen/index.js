@@ -5,6 +5,7 @@ import * as Api from '../../api/index';
 import ProgressDialogue from '../../components/alertdialogue';
 import {COLORS} from '../../constants/colors';
 import RenderTxtView from '../../components/rendertxtview';
+import * as Helper from '../../helper';
 
 const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
@@ -27,17 +28,11 @@ const HomeScreen = ({navigation}) => {
       scope: 'PRODUCTION',
     };
 
-    let headerBase = {
-      Authorization:
-        'Basic TGJUZVVFT2RpTEhhZzV4aUxpWDdPQ3ZFbmZNYTpiWVNtbFRBakxsVDJuWEc1SVh2QjNLRDdvVm9h',
-      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    };
-
     //get access token
     let responseBase = await Api.callPostApi(
       Constants.APP_POST_ACCESS_TOKEN,
       body,
-      headerBase,
+      Helper.getHeader(),
     );
     //console.log('api-response-splash', responseBase);
 
